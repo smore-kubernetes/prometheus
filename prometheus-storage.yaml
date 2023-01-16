@@ -1,0 +1,83 @@
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: prometheus
+  labels:
+    name: prometheus
+    type: local
+spec:
+  capacity:
+    storage: 512Gi
+  volumeMode: Filesystem
+  accessModes:
+    - ReadWriteOnce
+  persistentVolumeReclaimPolicy: Delete
+  storageClassName: local-storage
+  local:
+    path: /dev/mapper/data-prometheus
+  nodeAffinity:
+    required:
+      nodeSelectorTerms:
+        - matchExpressions:
+          - key: kubernetes.io/hostname
+            operator: In
+            values:
+              - k3os-6802
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: prometheus-pvc
+spec:
+  storageClassName: local-storage
+  volumeMode: Filesystem
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 512Gi
+  selector:
+    matchLabels:
+      name: "prometheus"
+---
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: prometheus-config
+  labels:
+    name: prometheus-config
+    type: local
+spec:
+  capacity:
+    storage: 128Mi
+  volumeMode: Filesystem
+  accessModes:
+    - ReadWriteOnce
+  persistentVolumeReclaimPolicy: Delete
+  storageClassName: local-storage
+  local:
+    path: /dev/mapper/data-prometheus--config
+  nodeAffinity:
+    required:
+      nodeSelectorTerms:
+        - matchExpressions:
+          - key: kubernetes.io/hostname
+            operator: In
+            values:
+              - k3os-6802
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: prometheus-config-pvc
+spec:
+  storageClassName: local-storage
+  volumeMode: Filesystem
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 128Mi
+  selector:
+    matchLabels:
+      name: "prometheus-config"
