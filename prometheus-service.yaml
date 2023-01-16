@@ -5,7 +5,7 @@ metadata:
   name: prometheus
 spec:
   selector:
-    app.kubernetes.io/name: prometheus
+    app: prometheus
   ports:
     - port: 9090
       name: http-prometheus
